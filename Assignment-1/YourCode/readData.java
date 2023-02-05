@@ -5,12 +5,14 @@ import java.util.List;
 
 //Reads data from csv files into Hashtable
 public class readData {
-    public static void main(String[] args) throws Exception {
-
-        //Enter path to csv folder
-        String csvFolderPath = "";
-        
-        File dir = new File(csvFolderPath);
+	String csvFolderPath;
+	
+	public readData(String Path) {
+		csvFolderPath = Path;
+	}
+	
+	 public void read() throws Exception {
+		File dir = new File(csvFolderPath);
         File[] dirFiles = dir.listFiles();
 
         //Checks if directory of files exists then loops through all files
@@ -32,9 +34,9 @@ public class readData {
                     }
             }
         } else {
-            System.err.println("Directory doesn't contain any file contents.");
+            throw new Exception("Directory doesn't contain any file contents.");
         }
-    }
+	}
 
     //Get customer.csv data
     static HashMap customerData(File child){
