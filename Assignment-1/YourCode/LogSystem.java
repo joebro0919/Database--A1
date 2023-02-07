@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,9 +28,13 @@ public class LogSystem {
             for (File child : dirFiles) {
                     String dataset = child.getName();
                     //Checks which file the system is on
-                    if (dataset.equals("sample-log.csv")){
-                        HashMap log = readLogData(child);
-                        formatLog(log);
+                    if (dataset.equals("log.csv")){
+                    	if(child.length() > 0) {
+                    		HashMap log = readLogData(child);
+                            formatLog(log);
+                    	} else {
+                    		System.out.println("The log is currently empty.");
+                    	}
                     }
             }
         } else {
@@ -50,19 +55,22 @@ public class LogSystem {
         try{
             br = new BufferedReader(new FileReader(child));
             while((line = br.readLine()) != null){
+            	
                 List<String> data = new ArrayList<String>();
 
                 String[] dataRow = line.split(splitDataBy);
+               
                 //Skip first value (Key)
-                for(int i = 1; i < dataRow.length; i++){
+                for(int i = 0; i < dataRow.length; i++){
                     data.add(dataRow[i]);
                 }
+
                 log.put(Integer.parseInt(dataRow[0]), data);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } finally {
@@ -82,42 +90,40 @@ public class LogSystem {
     	
     	StringBuilder sb = new StringBuilder();
         for (int key : logData.keySet()) {
-            sb.append("Transaction ").append(key).append(":").append("\n");
+            sb.append("Transaction (ID = ").append(key).append("):").append("\n");
             List<String> values = logData.get(key);
-            sb.append(" Table Altered = ").append(values.get(0)).append("\n")
-              .append(" Account Number = ").append(values.get(1)).append("\n")
-              .append(" Balance Before = ").append(values.get(2)).append("\n")
-              .append(" Balance After = ").append(values.get(3)).append("\n")
-              .append(" Time Stamp = ").append(values.get(4)).append("\n")
-              .append(" Customer ID = ").append(values.get(5)).append("\n")
-              .append(" Successful = ").append(values.get(6)).append("\n\n");
+            sb.append(" Table Altered = ").append(values.get(1)).append("\n")
+              .append(" Account Number = ").append(values.get(2)).append("\n")
+              .append(" Balance Before = ").append(values.get(3)).append("\n")
+              .append(" Balance After = ").append(values.get(4)).append("\n")
+              .append(" Time Stamp = ").append(values.get(5)).append("\n")
+              .append(" Customer ID = ").append(values.get(6)).append("\n")
+              .append(" Successful = ").append(values.get(7)).append("\n\n");
         }
         System.out.println(sb.toString());
     }
     
-    //Updates the log.csv file
-    public static void writeLogData(HashMap<Integer, List<String>> logData) { 
-		try (FileWriter writer = new FileWriter("")) {
-			clearLog();
-            for (Map.Entry<Integer, List<String>> entry : logData.entrySet()) {
-                Integer key = entry.getKey();
-                List<String> values = entry.getValue();
-                String line = key + "," + String.join(",", values);
-                writer.write(line + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-	}
-    
-    //clears log.csv contents
-    private static void clearLog() { 
-		File file = new File("");
-        try (PrintWriter writer = new PrintWriter(file)) {
-            writer.print("");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-	}
+    //Updates log.csv 
+    public static void writeLogData(String transactionData) { 
+    	//Assumption: transactionData is in the format: "transactionId,tableAltered,accountNum,balanceBefore,balanceAfter,timeStamp,accountId,isSuccessful"
+    	//Example: "1,account balance,112345C,3425,3000,2023-01-23 14:12,1,yes"
+    	//NOTE: transactionID will be randomly generated eventually
+    	
+    	String currentDir = Paths.get("").toAbsolutePath().toString();
+    	String logPath = currentDir + "\\Assignment-1\\Data-Assignment-1\\csv\\log.csv"; //hardcoded for now
+    	File file = new File(logPath);
 
+    	try {
+            FileWriter fw = new FileWriter(logPath, true);
+            if(file.length() == 0) {
+            	fw.write(transactionData);
+            } else {
+            	fw.write(System.getProperty("line.separator") + transactionData);
+            }
+            fw.close();
+        } catch (IOException e) {
+            System.err.println("An error occurred while writing to the csv file: " + e.getMessage());
+        }
+	}
+ 
 }
