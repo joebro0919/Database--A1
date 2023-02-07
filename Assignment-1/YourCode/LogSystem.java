@@ -12,8 +12,33 @@ import java.util.Map;
 
 public class LogSystem {
 	
-	//Get sample-log.csv data
-    static HashMap readLogData(File child) {
+	String csvFolderPath;
+	
+	public LogSystem(String Path) {
+		csvFolderPath = Path;
+	}
+	
+	public void displayLogContent() throws Exception {
+		File dir = new File(csvFolderPath);
+        File[] dirFiles = dir.listFiles();
+
+        //Checks if directory of files exists then loops through all files
+        if (dirFiles != null) {
+            for (File child : dirFiles) {
+                    String dataset = child.getName();
+                    //Checks which file the system is on
+                    if (dataset.equals("sample-log.csv")){
+                        HashMap log = readLogData(child);
+                        formatLog(log);
+                    }
+            }
+        } else {
+            throw new Exception("Directory doesn't contain any file contents.");
+        }
+	}
+	
+	//Reads log.csv data
+    private static HashMap readLogData(File child) {
         String splitDataBy = ",";
         String line = "";
         BufferedReader br = null;
@@ -52,7 +77,26 @@ public class LogSystem {
         return log;
     }
     
-    public static void writeLogData(HashMap<Integer, List<String>> logData) { //writes the transaction entry to the log csv file
+    //Prints the log in table format
+    private static void formatLog(HashMap<Integer, List<String>> logData) {
+    	
+    	StringBuilder sb = new StringBuilder();
+        for (int key : logData.keySet()) {
+            sb.append("Transaction ").append(key).append(":").append("\n");
+            List<String> values = logData.get(key);
+            sb.append(" Table Altered = ").append(values.get(0)).append("\n")
+              .append(" Account Number = ").append(values.get(1)).append("\n")
+              .append(" Balance Before = ").append(values.get(2)).append("\n")
+              .append(" Balance After = ").append(values.get(3)).append("\n")
+              .append(" Time Stamp = ").append(values.get(4)).append("\n")
+              .append(" Customer ID = ").append(values.get(5)).append("\n")
+              .append(" Successful = ").append(values.get(6)).append("\n\n");
+        }
+        System.out.println(sb.toString());
+    }
+    
+    //Updates the log.csv file
+    public static void writeLogData(HashMap<Integer, List<String>> logData) { 
 		try (FileWriter writer = new FileWriter("")) {
 			clearLog();
             for (Map.Entry<Integer, List<String>> entry : logData.entrySet()) {
@@ -66,7 +110,8 @@ public class LogSystem {
         }
 	}
     
-    public static void clearLog() { //helper to clear csv file contents
+    //clears log.csv contents
+    private static void clearLog() { 
 		File file = new File("");
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.print("");
