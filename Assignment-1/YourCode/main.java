@@ -1,12 +1,13 @@
+import java.io.File;
 import java.util.Scanner;
 
 public class main {
 	static Scanner scanner = new Scanner(System.in);
+	
 	public static void main(String[] args) {
 //		print("First Output:")
 		getContent();
 //	    print("Print current status of Log Sub-system\n\n")
-		
 	}
 	
 	public static void getContent() {
@@ -17,6 +18,7 @@ public class main {
 		try {
 			System.out.println("Original Contents of Database are:");
 			readDataObject.read();
+			
 		} catch (Exception e) {
 			System.err.println(e);
 			try {
