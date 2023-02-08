@@ -11,6 +11,7 @@ public class main {
 		getContent(CSVFolder);
 //	    print("Print current status of Log Sub-system\n\n")
 //		sample:	updateLog("112345S","98765","99190","1","success"); 
+		updateLog("112345S","98765","99190","1","success"); 
 		displayLog(CSVFolder);
 
 	}

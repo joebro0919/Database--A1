@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class LogSystem {
 	
@@ -106,14 +108,17 @@ public class LogSystem {
     }
     
     //Updates log.csv 
-    public static void writeLogData(String accountNum, String oldBalance, String newBalance, String customerId, String status) { 
+    public static void writeLogData(String accountNum, String oldBalance, String newBalance, String customerId, String status) throws FileNotFoundException { 
     	
     	//grab path to log.csv
     	String currentDir = Paths.get("").toAbsolutePath().toString();
     	String logPath = currentDir + "\\Data-Assignment-1\\csv\\log.csv"; 
     	File file = new File(logPath);
     	
-    	String transactionData = formatTransaction(accountNum, oldBalance, newBalance, customerId, status);
+    	//grab transaction ID
+    	String transId = Integer.toString(incrementTransId(logPath));
+    	
+    	String transactionData = formatTransaction(transId, accountNum, oldBalance, newBalance, customerId, status);
 		
 		try {
 			FileWriter fw = new FileWriter(logPath, true);
@@ -129,7 +134,28 @@ public class LogSystem {
 		 
 	}
     
-    private static String formatTransaction(String accountNum, String oldBalance, String newBalance, String customerId, String status) {
+    private static Integer incrementTransId(String fileName) throws FileNotFoundException {
+    	BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+        String input;
+        int count = 0;
+        try {
+			while((input = bufferedReader.readLine()) != null)
+			{
+			    count++;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        if (count == 0) {
+        	return 1;
+        } else {
+        	return count + 1;
+        }
+
+    }
+    
+    private static String formatTransaction(String transId, String accountNum, String oldBalance, String newBalance, String customerId, String status) {
     	
     	//table altered column
     	String TABLE_ALTERED = "Account Balance"; 
@@ -138,13 +164,10 @@ public class LogSystem {
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     	Date date = new Date();
     	String currentDateTime = dateFormat.format(date);
-    	
-    	//get new transaction id
-    	String transactionId = "2"; //RANDOMLY GENERATE OR INCREMENT FROM LAST ID
-    	
+
     	//put it all together
     	StringBuilder sb = new StringBuilder();
-    	sb.append(transactionId + ",")
+    	sb.append(transId + ",")
     	.append(TABLE_ALTERED + ",")
     	.append(accountNum + ",")
     	.append(oldBalance + ",")
