@@ -10,8 +10,9 @@ public class main {
 //		print("First Output:")
 		getContent(CSVFolder);
 //	    print("Print current status of Log Sub-system\n\n")
-//		updateLog("3,account balance,111111S,11111,2323,2023-01-23 14:13,1,no"); sample
+//		sample:	updateLog("112345S","98765","99190","1","success"); 
 		displayLog(CSVFolder);
+
 	}
 	
 	public static void getContent(String CSVFolder) {
@@ -50,13 +51,12 @@ public class main {
 		}
 	}
 	
-	public static void updateLog(String transactionData) {
-		//assumption: transactionData is in the format: "transactionId,tableAltered,accountNum,balanceBefore,balanceAfter,timeStamp,accountId,isSuccessful"
-		//example: "1,account balance,112345C,3425,3000,2023-01-23 14:12,1,yes"
-		
+	public static void updateLog(String accountNum, String oldBalance, String newBalance, String customerId, String status) {
+		//Note: status parameter is whether the transaction succeeded or not. Options: "Success" or"Failure"
+
 		try {
 			System.out.println("\nUpdating Log System...");
-			LogSystem.writeLogData(transactionData);
+			LogSystem.writeLogData(accountNum, oldBalance, newBalance, customerId, status);
 			
 		} catch (Exception e) {
 			System.err.println(e);

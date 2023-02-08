@@ -6,7 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,32 +100,60 @@ public class LogSystem {
               .append(" Balance After = ").append(values.get(4)).append("\n")
               .append(" Time Stamp = ").append(values.get(5)).append("\n")
               .append(" Customer ID = ").append(values.get(6)).append("\n")
-              .append(" Successful = ").append(values.get(7)).append("\n\n");
+              .append(" Status = ").append(values.get(7)).append("\n\n");
         }
         System.out.println(sb.toString());
     }
     
     //Updates log.csv 
-    public static void writeLogData(String transactionData) { 
-    	//Assumption: transactionData is in the format: "transactionId,tableAltered,accountNum,balanceBefore,balanceAfter,timeStamp,accountId,isSuccessful"
-    	//Example: "1,account balance,112345C,3425,3000,2023-01-23 14:12,1,yes"
-    	//NOTE: transactionID will be randomly generated eventually
+    public static void writeLogData(String accountNum, String oldBalance, String newBalance, String customerId, String status) { 
     	
+    	//grab path to log.csv
     	String currentDir = Paths.get("").toAbsolutePath().toString();
-    	String logPath = currentDir + "\\Assignment-1\\Data-Assignment-1\\csv\\log.csv"; //hardcoded for now
+    	String logPath = currentDir + "\\Data-Assignment-1\\csv\\log.csv"; 
     	File file = new File(logPath);
-
-    	try {
-            FileWriter fw = new FileWriter(logPath, true);
-            if(file.length() == 0) {
-            	fw.write(transactionData);
-            } else {
-            	fw.write(System.getProperty("line.separator") + transactionData);
-            }
-            fw.close();
-        } catch (IOException e) {
-            System.err.println("An error occurred while writing to the csv file: " + e.getMessage());
-        }
+    	
+    	String transactionData = formatTransaction(accountNum, oldBalance, newBalance, customerId, status);
+		
+		try {
+			FileWriter fw = new FileWriter(logPath, true);
+			if (file.length() == 0) {
+				fw.write(transactionData);
+			} else {
+				fw.write(System.getProperty("line.separator") + transactionData);
+			}
+			fw.close();
+		} catch (IOException e) {
+			System.err.println("An error occurred while writing to the csv file: " + e.getMessage());
+		}
+		 
 	}
+    
+    private static String formatTransaction(String accountNum, String oldBalance, String newBalance, String customerId, String status) {
+    	
+    	//table altered column
+    	String TABLE_ALTERED = "Account Balance"; 
+    	
+    	//get today's date and time
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    	Date date = new Date();
+    	String currentDateTime = dateFormat.format(date);
+    	
+    	//get new transaction id
+    	String transactionId = "2"; //RANDOMLY GENERATE OR INCREMENT FROM LAST ID
+    	
+    	//put it all together
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(transactionId + ",")
+    	.append(TABLE_ALTERED + ",")
+    	.append(accountNum + ",")
+    	.append(oldBalance + ",")
+    	.append(newBalance + ",")
+    	.append(currentDateTime + ",")
+    	.append(customerId + ",")
+    	.append(status);
+
+    	return sb.toString();
+    }
  
 }
