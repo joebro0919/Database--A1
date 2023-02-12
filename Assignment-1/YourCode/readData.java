@@ -8,7 +8,7 @@ public class readData {
 	String csvFolderPath;
 	static HashMap accountBalances;
 
-	public HashMap getAccountBalance() {
+	public static HashMap getAccountBalance() {
 		return accountBalances;
 	}
 	public void updateAccountBalance(String accountNumber, Integer newBalance) {

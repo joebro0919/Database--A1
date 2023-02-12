@@ -112,7 +112,7 @@ public class LogSystem {
     	
     	//grab path to log.csv
     	String currentDir = Paths.get("").toAbsolutePath().toString();
-    	String logPath = currentDir + "\\Data-Assignment-1\\csv\\log.csv"; 
+    	String logPath = currentDir + "\\Assignment-1\\Data-Assignment-1\\csv\\log.csv"; 
     	File file = new File(logPath);
     	
     	//grab transaction ID
