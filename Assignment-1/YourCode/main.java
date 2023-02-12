@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.HashMap;
 
 public class main {
 	static Scanner scanner = new Scanner(System.in);
@@ -41,18 +42,25 @@ public class main {
 		//get Emma's account details
 		//Emma will be moving $100,000 from her checking account (312345C) to her Savings Account (312345S).
 		readData readDataObject = new readData(CSVFolder);
+		HashMap accBalData = readData.getAccountBalance();
 		Integer valueChecking = readDataObject.getAccountBalance("312345c");
 		Integer valueSavings = readDataObject.getAccountBalance("312345s");
 		Integer newCheckingValue = valueChecking - 100000;
 		readDataObject.updateAccountBalance("312345c", newCheckingValue);
 		updateLog("312345c","" + valueChecking,""+newCheckingValue,"" + 3,"success"); 
+		accBalData.put("312345c", newCheckingValue);
 		Integer newSavingsValue = valueSavings + 100000;
 		readDataObject.updateAccountBalance("312345s", newSavingsValue);
 		updateLog("312345s","" + valueSavings,""+newSavingsValue,"" + 3,"success");
-		//UPDATE IN CSV
+		accBalData.put("312345s", newSavingsValue);
+		
+		//Writes updated data to file
+		writeData writeDataObject = new writeData(accBalData);
 		
 		//PRINT UPDATED VALUE
 		getContent(CSVFolder);
+
+
 	}
 	
 	public static void getContent(String CSVFolder) {
