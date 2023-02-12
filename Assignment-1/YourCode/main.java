@@ -2,24 +2,22 @@ import java.util.Scanner;
 
 public class main {
 	static Scanner scanner = new Scanner(System.in);
-	
 	public static void main(String[] args) {
 		System.out.println("Please enter the folder path of the CSV files:");
 		String CSVFolder = scanner.nextLine();
-		
 //		print("First Output:")
 		getContent(CSVFolder);
 //	    print("Print current status of Log Sub-system\n\n")
 //		sample:	updateLog("112345S","98765","99190","1","success"); 
-		updateLog("112345S","98765","99190","1","success"); 
 		displayLog(CSVFolder);
 		while(true) {
-			System.out.println("Please enter the number associated with which transaction you wish to see: \n1) Successfuly Transaction\n2) Failed Transaction");
+			System.out.println("Please enter the number associated with which transaction you wish to see: \n1) Successful Transaction\n2) Failed Transaction");
 			try {
 			int userChoice = scanner.nextInt();
 			if(userChoice == 1) {
 				//first choice code:
 				System.out.println("TRANSACTION 1:\n");
+				transaction1(CSVFolder);
 				break;
 			}
 			else if(userChoice == 2) {
@@ -39,10 +37,28 @@ public class main {
 		
 	}
 	
+	public static void transaction1(String CSVFolder) {
+		//get Emma's account details
+		//Emma will be moving $100,000 from her checking account (312345C) to her Savings Account (312345S).
+		readData readDataObject = new readData(CSVFolder);
+		Integer valueChecking = readDataObject.getAccountBalance("312345c");
+		Integer valueSavings = readDataObject.getAccountBalance("312345s");
+		Integer newCheckingValue = valueChecking - 100000;
+		readDataObject.updateAccountBalance("312345c", newCheckingValue);
+		updateLog("312345c","" + valueChecking,""+newCheckingValue,"" + 3,"success"); 
+		Integer newSavingsValue = valueSavings + 100000;
+		readDataObject.updateAccountBalance("312345s", newSavingsValue);
+		updateLog("312345s","" + valueSavings,""+newSavingsValue,"" + 3,"success");
+		//UPDATE IN CSV
+		
+		//PRINT UPDATED VALUE
+		getContent(CSVFolder);
+	}
+	
 	public static void getContent(String CSVFolder) {
 		readData readDataObject = new readData(CSVFolder);
 		try {
-			System.out.println("\nOriginal Contents of Database are:");
+			System.out.println("\nThe Contents of Database are:");
 			readDataObject.read();
 			
 		} catch (Exception e) {
