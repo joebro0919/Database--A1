@@ -5,12 +5,22 @@ import java.util.List;
 
 //Reads data from csv files into Hashtable
 public class readData {
-    public static void main(String[] args) throws Exception {
+	String csvFolderPath;
+	static HashMap accountBalances;
 
-        //Enter path to csv folder
-        String csvFolderPath = "";
-        
-        File dir = new File(csvFolderPath);
+	public HashMap getAccountBalance() {
+		return accountBalances;
+	}
+	public void updateAccountBalance(String accountNumber, Integer newBalance) {
+		accountBalances.put(accountNumber, newBalance);
+	}
+	
+	public readData(String Path) {
+		csvFolderPath = Path;
+	}
+	
+	 public void read() throws Exception {
+		File dir = new File(csvFolderPath);
         File[] dirFiles = dir.listFiles();
 
         //Checks if directory of files exists then loops through all files
@@ -27,14 +37,34 @@ public class readData {
                         System.out.println(account);
                     }
                     else if (dataset.equals("account-balance.csv")){
-                        HashMap accountBal = accountBalData(child);
-                        System.out.println(accountBal);
+                    	accountBalances = accountBalData(child);
                     }
             }
         } else {
-            System.err.println("Directory doesn't contain any file contents.");
+            throw new Exception("Directory doesn't contain any file contents.");
         }
-    }
+	}
+	 
+	 public Integer getAccountBalance(String AccountNumber) {
+		 File dir = new File(csvFolderPath);
+	     File[] dirFiles = dir.listFiles();
+	     HashMap account = null;
+	        //Checks if directory of files exists then loops through all files
+	        if (dirFiles != null) {
+	            for (File child : dirFiles) {
+	                    String dataset = child.getName();
+	                    if (dataset.equals("account-balance.csv")){
+	                    	account = accountBalData(child);
+	                    }
+	            }
+	        }
+	        //312345c & 312345s
+	        //{312345c=786324, 312345s=987613, 512345c=19865, 512345s=98346, 112345c=3425, 112345s=98765, 412345c=129876, 412345s=65734, 212345c=2119, 212345s=34567}
+	        Object value = account.get(AccountNumber);
+	        return (Integer) value;
+	 }
+	 
+
 
     //Get customer.csv data
     static HashMap customerData(File child){
@@ -151,7 +181,7 @@ public class readData {
                 }
             }
         }
-
         return accountBal;
     }
+
 }
