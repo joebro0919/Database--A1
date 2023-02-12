@@ -13,7 +13,30 @@ public class main {
 //		sample:	updateLog("112345S","98765","99190","1","success"); 
 		updateLog("112345S","98765","99190","1","success"); 
 		displayLog(CSVFolder);
-
+		while(true) {
+			System.out.println("Please enter the number associated with which transaction you wish to see: \n1) Successfuly Transaction\n2) Failed Transaction");
+			try {
+			int userChoice = scanner.nextInt();
+			if(userChoice == 1) {
+				//first choice code:
+				System.out.println("TRANSACTION 1:\n");
+				break;
+			}
+			else if(userChoice == 2) {
+				//second choice code
+				System.out.println("TRANSACTION 2:\n");
+				break;
+			}
+			else {
+				 System.err.println("Invalid input, please try again");
+			}
+		} catch(Exception e){
+			System.err.println("Invalid input, please try again");
+			scanner.next();
+		}
+	}
+	
+		
 	}
 	
 	public static void getContent(String CSVFolder) {
