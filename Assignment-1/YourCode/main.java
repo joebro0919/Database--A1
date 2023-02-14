@@ -75,7 +75,7 @@ public class main {
 		readDataObject.updateAccountBalance("312345c", newCheckingValue);
 		updateLog("312345c","" + valueChecking,""+newCheckingValue,"" + 3,"fail");
 		writeData writeDataObject = new writeData(accBalData);
-		System.out.println("Transaction Failed, rolling back log\n");
+		System.err.println("Transaction Failed, rolling back log\n");
 		System.out.println("Database Contents While in Bad State:");
 		getContent(CSVFolder);
 		//FAIL, ROLLBACK

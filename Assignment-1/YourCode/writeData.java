@@ -10,7 +10,7 @@ public class writeData {
     // Loops through HashMap and re-writes new data into csv file
     public void writeToFile(String path, HashMap map) {
 
-        String updateFile = path + "/Assignment-1/Data-Assignment-1/csv/account-balance.csv";
+        String updateFile = path + "/Data-Assignment-1/csv/account-balance.csv";
         File file = new File(updateFile);
 
         String eol = System.getProperty("line.separator");

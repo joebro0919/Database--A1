@@ -148,7 +148,7 @@ public class LogSystem {
     	//grab path to log.csv
     	String currentDir = Paths.get("").toAbsolutePath().toString();
         //System.out.println(currentDir); testing
-    	String logPath = currentDir + "\\Assignment-1\\Data-Assignment-1\\csv\\log.csv"; 
+    	String logPath = currentDir + "\\Data-Assignment-1\\csv\\log.csv"; 
     	File file = new File(logPath);
         //System.out.println(logPath); testing
     	
