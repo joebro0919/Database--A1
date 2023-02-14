@@ -37,7 +37,7 @@ public class LogSystem {
                     		HashMap log = readLogData(child);
                             formatLog(log);
                     	} else {
-                    		System.out.println("The log is currently empty.");
+                    		System.out.println("The log is currently empty. \n");
                     	}
                     }
             }
@@ -45,6 +45,41 @@ public class LogSystem {
             throw new Exception("Directory doesn't contain any file contents.");
         }
 	}
+
+    /*
+     * Function: void rollback(HashMap accBalData, String accountNumber)
+     * 
+     * Purpose:
+     * Given the account balance data structure and accountNumber, rollsback the previous
+     * operation found in the transaction log. The account balance data structure is updated
+     * to the "before" value of the most recent operation found in the Log System
+     * 
+     */
+    public void rollback(HashMap accBalData, String accountNumber){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(csvFolderPath + "\\log.csv"));
+
+            Integer beforeFailure;
+            String lastLine = "", currLine;
+            String[] rollbackLine;
+
+            while ((currLine = br.readLine()) != null) {   
+                lastLine = currLine;
+            }
+            System.out.println(lastLine);
+            rollbackLine = lastLine.split(",");
+
+            //need to revert to this value
+            beforeFailure = Integer.parseInt(rollbackLine[3]);
+            //reverts bad changes to database data struct
+            accBalData.put(accountNumber, beforeFailure);
+
+            br.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    
+    }
 	
 	//Reads log.csv data
     private static HashMap readLogData(File child) {
@@ -112,8 +147,10 @@ public class LogSystem {
     	
     	//grab path to log.csv
     	String currentDir = Paths.get("").toAbsolutePath().toString();
-    	String logPath = currentDir + "\\Data-Assignment-1\\csv\\log.csv"; 
+        //System.out.println(currentDir); testing
+    	String logPath = currentDir + "\\Assignment-1\\Data-Assignment-1\\csv\\log.csv"; 
     	File file = new File(logPath);
+        //System.out.println(logPath); testing
     	
     	//grab transaction ID
     	String transId = Integer.toString(incrementTransId(logPath));
@@ -178,5 +215,7 @@ public class LogSystem {
 
     	return sb.toString();
     }
+
+    
  
 }

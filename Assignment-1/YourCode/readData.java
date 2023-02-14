@@ -8,7 +8,7 @@ public class readData {
 	String csvFolderPath;
 	static HashMap accountBalances;
 
-	public HashMap getAccountBalance() {
+	public static HashMap getAccountBalance() {
 		return accountBalances;
 	}
 	public void updateAccountBalance(String accountNumber, Integer newBalance) {
@@ -30,14 +30,15 @@ public class readData {
                     //Checks which file the system is on
                     if (dataset.equals("customer.csv")){
                         HashMap customer = customerData(child);
-                        System.out.println(customer);
+                        System.out.println("Customer Database \n" + customer + "\n");
                     }
                     else if (dataset.equals("account.csv")){
                         HashMap account = accountData(child);
-                        System.out.println(account);
+                        System.out.println("Account Database \n" + account + "\n");
                     }
                     else if (dataset.equals("account-balance.csv")){
                     	accountBalances = accountBalData(child);
+                        System.out.println("Account Balances Database \n" + accountBalances + "\n");
                     }
             }
         } else {
@@ -183,5 +184,7 @@ public class readData {
         }
         return accountBal;
     }
+
+   
 
 }

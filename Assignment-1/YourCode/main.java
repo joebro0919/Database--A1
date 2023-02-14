@@ -1,8 +1,11 @@
 import java.util.Scanner;
+import java.util.HashMap;
 
 public class main {
 	static Scanner scanner = new Scanner(System.in);
 	public static void main(String[] args) {
+		String userDirectory = System.getProperty("user.dir");
+		System.out.println(userDirectory);
 		System.out.println("Please enter the folder path of the CSV files:");
 		String CSVFolder = scanner.nextLine();
 //		print("First Output:")
@@ -23,6 +26,7 @@ public class main {
 			else if(userChoice == 2) {
 				//second choice code
 				System.out.println("TRANSACTION 2:\n");
+				transaction2(CSVFolder);
 				break;
 			}
 			else {
@@ -41,17 +45,45 @@ public class main {
 		//get Emma's account details
 		//Emma will be moving $100,000 from her checking account (312345C) to her Savings Account (312345S).
 		readData readDataObject = new readData(CSVFolder);
+		HashMap accBalData = readData.getAccountBalance();
 		Integer valueChecking = readDataObject.getAccountBalance("312345c");
 		Integer valueSavings = readDataObject.getAccountBalance("312345s");
 		Integer newCheckingValue = valueChecking - 100000;
 		readDataObject.updateAccountBalance("312345c", newCheckingValue);
 		updateLog("312345c","" + valueChecking,""+newCheckingValue,"" + 3,"success"); 
+		accBalData.put("312345c", newCheckingValue);
 		Integer newSavingsValue = valueSavings + 100000;
 		readDataObject.updateAccountBalance("312345s", newSavingsValue);
 		updateLog("312345s","" + valueSavings,""+newSavingsValue,"" + 3,"success");
-		//UPDATE IN CSV
-		
+		accBalData.put("312345s", newSavingsValue);
+		//Writes updated data to file
+		writeData writeDataObject = new writeData(accBalData);
 		//PRINT UPDATED VALUE
+		displayLog(CSVFolder);
+		getContent(CSVFolder);
+	}
+
+	public static void transaction2(String CSVFolder) {
+		LogSystem logSystem = new LogSystem(CSVFolder);
+		//get Emma's account details
+		//Emma will be moving $100,000 from her checking account (312345C) to her Savings Account (312345S).
+		readData readDataObject = new readData(CSVFolder);
+		HashMap accBalData = readData.getAccountBalance();
+		Integer valueChecking = readDataObject.getAccountBalance("312345c");
+		Integer valueSavings = readDataObject.getAccountBalance("312345s");
+		Integer newCheckingValue = valueChecking - 100000;
+		readDataObject.updateAccountBalance("312345c", newCheckingValue);
+		updateLog("312345c","" + valueChecking,""+newCheckingValue,"" + 3,"fail");
+		writeData writeDataObject = new writeData(accBalData);
+		System.out.println("Transaction Failed, rolling back log\n");
+		System.out.println("Database Contents While in Bad State:");
+		getContent(CSVFolder);
+		//FAIL, ROLLBACK
+		logSystem.rollback(accBalData, "312345c");
+		writeData writeDataObjectRollback = new writeData(accBalData);
+		//PRINT UPDATED VALUE
+		displayLog(CSVFolder);
+		System.out.println("Database Contents After Rollback to Good State: ");
 		getContent(CSVFolder);
 	}
 	
@@ -102,5 +134,7 @@ public class main {
 			System.err.println(e);
 		}
 	}
+
+	
 
 }
